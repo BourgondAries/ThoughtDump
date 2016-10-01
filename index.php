@@ -8,7 +8,7 @@
 			.content { margin: 1vh 1vw; }
 			.prefoot { min-height: 95vh; }
 			.vertical.space { height: 1vh; }
-			body { background-color: black; color: #4C4C4C; font-family: sans-serif; letter-spacing: 2px; width: 100vw; }
+			body { background-color: black; color: #4C4C4C; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; letter-spacing: 2px; line-height: 24px; width: 100vw; }
 
 			form { display: inline; width: auto; }
 			button { background: #232b30; border: 1px solid #1c252b; color: #9fa8b0; font-weight: bold; height: 3vh; outline: 0; width: 20%; }

@@ -19,7 +19,7 @@
 			pre .line-number { float: left; margin: 0 1em 0 -1em; border-right: 1px solid; text-align: right; }
 			pre .line-number span { display: block; padding: 0 .5em 0 1em; }
 		</style>
-		<title>Cxy: The Fourth Evolution</title>
+		<title>Evo's Musings</title>
 	</head>
 	<body>
 		<div class="prefoot">

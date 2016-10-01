@@ -1,5 +1,19 @@
 <select name="page" onchange="httpGetAsyncPage(this.value,getPage);">
-<optgroup label="This">
-<option value="0"></option>
+<optgroup label="Blog">
+<option value="0"> Turning Off Emotions in Debates</option>
+<option value="1"> The Logical Fallacy of Color</option>
+<option value="2"> Ecological Diversity</option>
+<option value="3"> The Common Survival Misconception</option>
+<option value="4"> We're Never Superiour</option>
+<option value="5"> Computers and Transitivity</option>
+<option value="6"> Emotions</option>
+<option value="7"> Central Reproduction</option>
+<option value="8"> Dogmatic Atheism</option>
+<option value="9"> Ought We Abide?</option>
+<option value="10"> Evolutionary Utilitarianism</option>
+<option value="11"> Range of Importance</option>
+<option value="12"> Superorganism</option>
+<option value="13"> The Law of Survival</option>
+<option value="14"> What is You?</option>
 </optgroup>
 </select>

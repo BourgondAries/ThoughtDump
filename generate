@@ -1,0 +1,34 @@
+#! /bin/bash
+
+# Script used for generating a new dropdown-menu
+# The first line: The first sentence is the grouping.
+# The second sentence is the subheader.
+# Based on this, we can generate a cool navibar.
+
+# Process every page with m4
+for i in preprocessed_pages/*; do
+	m4 "$i" > pages/"${i#preprocessed_pages/}"
+done
+
+cd pages/
+out=../autogen/navigation
+echo '<select name="page" onchange="httpGetAsyncPage(this.value,getPage);">' > "$out"
+lasthead=
+
+for i in $(ls | sort -n); do
+	line=$(cat $i | head -n 1)
+	head=$(echo "$line" | cut -d '.' -f 1)
+	if [ "$head" != "$lasthead" ]; then
+		if [ "$lasthead" != '' ]; then
+			echo '</optgroup>' >> "$out"
+		fi
+		echo "<optgroup label=\"$head\">" >> "$out"
+	fi
+	lasthead="$head"
+	sub=$(echo "$line" | cut -d '.' -f 2)
+	echo "<option value=\"$i\">${sub% }</option>" >> "$out"
+done
+
+echo '</optgroup>' >> "$out"
+echo '</select>' >> "$out"
+sed -i "s/\n//g" "$out"

@@ -1,0 +1,20 @@
+#! /bin/bash
+if [ $# -le 0 ]; then
+	echo 'This script requires one argument: which page to pop.'
+	exit 1
+fi
+if [[ "$1" =~ ^-?[0-9]+$ ]]; then
+	cd pages/
+	for i in *; do
+		if [[ $i -gt $1 ]]; then
+			mv $i $i.tmp
+		fi
+	done
+	for i in *.tmp; do
+		mv $i $((${i%%.tmp}-1))
+	done
+	exit
+else
+	echo 'You must supply an integer.'
+	exit 1
+fi

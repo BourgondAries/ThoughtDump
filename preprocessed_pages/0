@@ -1,3 +1,10 @@
-This.
+Heading. Subheading.
 
-Is an example
+<h1>It can be big</h1>
+This is an example of text.
+
+<pre>
+	fn main() {
+		info!["Hello!"];
+	}
+</pre>

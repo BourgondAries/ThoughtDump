@@ -4,7 +4,7 @@ if [ $# -le 0 ]; then
 	exit 1
 fi
 if [[ "$1" =~ ^-?[0-9]+$ ]]; then
-	cd pages/
+	cd preprocessed_pages/
 	for i in *; do
 		if [[ $i -ge $1 ]]; then
 			mv $i $i.tmp

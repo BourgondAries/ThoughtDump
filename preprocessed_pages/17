@@ -1,29 +1,30 @@
-Blog. Range of Importance.
+Rust. Racket.
 <br><br>
-From The Law of Survival we can conclude the following list of progenic human priorities. A higher location in the list is allowed to be a detriment of anything lower; however, only if it results in being advantageous from now until eternity. The list is general: it does not include exceptions as disease-ridden family members unworthy of spending resources on.
+I've spent a fair share of my time working with the Racket programming language. Racket is a lisp-1 language that puts much effort into allowing you to define new languages and augment them in your project.
+<br>
+It's a really neat language and greatly reduces technical debt, but Racket has its downsides: It's slow.
 <br><br>
-Yourself.
+Yes, even a relatively modern machine will be paused by the garbage collector. The entire application freezes for 1-3 seconds every minute or two.
 <br>
-Family.
+The program is a simple moving and scaling triangle. Even incremental GC doesn't help.
 <br>
-Friends.
+But I still like Racket. I also like Rust. It's nice. It's safe. It's a good language, but not as powerful as Racket in regards with its macros (until Rust gets procedural macros!).
 <br>
-Group    - Group of those you identify with.
-<br>
-Ethnicity.
-<br>
-Race.
-<br>
-Humans.
-<br>
-Mammals.
-<br>
-Plants.
-<br>
-Eukaryotes.
-<br>
-Prokaryotes.
-<br>
-Life.
-<br><br>
-All of the above are gradients. 'Race' does not signify your own race solely: but first your own. Then somewhat dissimilar ones. Gradually decreasing similarity until we approach 'Humans'.
+What about making a Racket-Rust transpiler in Racket? Thusly augmenting the power of a lisp and the speed of Rust.
+
+Here's an example:
+<pre><code class="rust">#lang rust
+
+[fn main [] [] [
+	[println! "Hello World!"]
+]]
+</code></pre>
+
+Would transpile to
+<pre><code class="rust">fn main() {
+	println!["Hello World!"];
+}
+</code></pre>
+
+Not the perfect example, but it captures the general idea. A good idea?
+

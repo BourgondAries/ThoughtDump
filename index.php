@@ -70,7 +70,7 @@
 		function setSelects(value) {
 			selects = document.getElementsByTagName("select");
 			for (i = 0; i < selects.length; ++i) {
-				selects[i].selectedIndex = value;
+				selects[i].selectedIndex = selects[i].length - value - 1;
 			}
 		}
 		setSelects(document.getElementById('navivalue').innerHTML);

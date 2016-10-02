@@ -1,30 +1,19 @@
-Rust. Racket.
+Blog. Superorganism.
 <br><br>
-I've spent a fair share of my time working with the Racket programming language. Racket is a lisp-1 language that puts much effort into allowing you to define new languages and augment them in your project.
-<br>
-It's a really neat language and greatly reduces technical debt, but Racket has its downsides: It's slow.
+Once upon a time there were two tribes of people.
 <br><br>
-Yes, even a relatively modern machine will be paused by the garbage collector. The entire application freezes for 1-3 seconds every minute or two.
-<br>
-The program is a simple moving and scaling triangle. Even incremental GC doesn't help.
-<br>
-But I still like Racket. I also like Rust. It's nice. It's safe. It's a good language, but not as powerful as Racket in regards with its macros (until Rust gets procedural macros!).
-<br>
-What about making a Racket-Rust transpiler in Racket? Thusly augmenting the power of a lisp and the speed of Rust.
-
-Here's an example:
-<pre><code class="rust">#lang rust
-
-[fn main [] [] [
-	[println! "Hello World!"]
-]]
-</code></pre>
-
-Would transpile to
-<pre><code class="rust">fn main() {
-	println!["Hello World!"];
-}
-</code></pre>
-
-Not the perfect example, but it captures the general idea. A good idea?
-
+Tribe 'A' was always a small tribe: about 60-90 people. They were farmers.
+<br><br>
+Tribe 'B' was always a slightly larger tribe: about 130-150 people. They were farmers.
+<br><br>
+Tribe 'C' was always a small tribe: about 60-90 people. They were farmers. They split off from 'A’ a while ago.
+<br><br>
+They were all neighbours. Neither too far nor too close to each other. All tribes are at their breeding limit. Their food supplies always stressed.
+<br><br>
+One day tribe 'B' attacks 'A'. The tribes are equally armed with pitchforks and other farm equipment. 'B's numerical strength overwhelmes 'A': 'A' is driven to extinction.
+<br><br>
+'B' has grown to stress both lands food generation: 190-240 people.
+<br><br>
+'B' has won. 'A' has lost.
+<br><br>
+'B' was able to create a larger collective. It was able to organize itself into a larger entity. Thereby it also gained the ability to produce more, and affect more. The trait of the superorganism - here - is superiour.

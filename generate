@@ -15,7 +15,7 @@ out=../autogen/navigation
 echo '<select name="page" onchange="httpGetAsyncPage(this.value,getPage);">' > "$out"
 lasthead=
 
-for i in $(ls | sort -n); do
+for i in $(ls | sort -rn); do
 	line=$(cat $i | head -n 1)
 	head=$(echo "$line" | cut -d '.' -f 1)
 	if [ "$head" != "$lasthead" ]; then

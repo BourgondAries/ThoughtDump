@@ -244,3 +244,8 @@ for _ in 0..100 {
 	}
 }
 </code></pre>
+The biggest issue with this method is that the collision overall becomes of order O(n^2). Limiting the active objects on the screen can be acceptable. Another method is to use the grid as an index.
+<br><br>
+All entities are registered in a list of indices. Any time indices overlap you need to check the respective entities by using normal box-collision.
+<br><br>
+This allows the arrow to use its supercover to mark tiles it will travel through.

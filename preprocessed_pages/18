@@ -220,4 +220,27 @@ The reason for scaling is that we're already inside some object. The frame time 
 Movements are small most of the time, and iterators in Rust are mainly compiled to efficient code. Performance should not be a problem. The real use of this algorithm is for high-velocity components such as bullets or lazers.
 <br><br>
 We can implement all sorts of collision handling in the loop and the 'resolve' function, which makes this system quite robust.
+<br><br>
+<h1>Entity-Entity Collision</h1>
+So far we've seen how we can model any entity-tile collision, but we have not considered entity-entity collisions.
+<br>
+We can't use the same techniques as both entities may be in motion. Another problem is how we should handle tunneling for entity-entity motion.
+<br><br>
 
+<img src="img/shot_arrow.png" alt="getting shot">
+
+How do we ensure that this high speed arrow will actually collide with the target? Suppose it travels 4 tiles in the current frame. This will make it tunnel through the entity.
+
+<br><br>
+<h1>Iterative Method</h1>
+Instead of using the coarse grid, we use an infinitesimal grid. We interpolate the current and the final position.
+But be warned! Before that we need to do a coarse check to ensure we don't penetrate walls. This cuts off our movement vector. Then we can use the fine grid.
+<br><br>
+<pre><code class="rust">let mut curpos = oldpos;
+for _ in 0..100 {
+	curpos += (newpos-oldpos)/100
+	if curpos.inside(rectangle) {
+		// Collision!
+	}
+}
+</code></pre>

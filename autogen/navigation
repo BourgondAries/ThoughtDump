@@ -1,19 +1,29 @@
 <select name="page" onchange="httpGetAsyncPage(this.value,getPage);">
+<optgroup label="About">
+<option value="0"> Me</option>
+</optgroup>
+<optgroup label="Rust">
+<option value="1"> 2D Collision</option>
+<option value="2"> Racket</option>
+<option value="3"> Logging in slog-rs</option>
+</optgroup>
 <optgroup label="Blog">
-<option value="0"> Turning Off Emotions in Debates</option>
-<option value="1"> The Logical Fallacy of Color</option>
-<option value="2"> Ecological Diversity</option>
-<option value="3"> The Common Survival Misconception</option>
-<option value="4"> We're Never Superiour</option>
-<option value="5"> Computers and Transitivity</option>
-<option value="6"> Emotions</option>
-<option value="7"> Central Reproduction</option>
-<option value="8"> Dogmatic Atheism</option>
-<option value="9"> Ought We Abide?</option>
-<option value="10"> Evolutionary Utilitarianism</option>
-<option value="11"> Range of Importance</option>
-<option value="12"> Superorganism</option>
-<option value="13"> The Law of Survival</option>
-<option value="14"> What is You?</option>
+<option value="4"> Serializing Thoughts</option>
+<option value="5"> Violence is Golden</option>
+<option value="6"> Turning Off Emotions in Debates</option>
+<option value="7"> The Logical Fallacy of Color</option>
+<option value="8"> Ecological Diversity</option>
+<option value="9"> The Common Survival Misconception</option>
+<option value="10"> We're Never Superiour</option>
+<option value="11"> Computers and Transitivity</option>
+<option value="12"> Emotions</option>
+<option value="13"> Central Reproduction</option>
+<option value="14"> Dogmatic Atheism</option>
+<option value="15"> Ought We Abide?</option>
+<option value="16"> Evolutionary Utilitarianism</option>
+<option value="17"> Range of Importance</option>
+<option value="18"> Superorganism</option>
+<option value="19"> The Law of Survival</option>
+<option value="20"> What is You?</option>
 </optgroup>
 </select>

@@ -1,15 +1,32 @@
-Blog. Ecological Diversity.
+Rust. Racket.
+<br><br>
+I've spent a fair share of my time working with the Racket programming language. Racket is a lisp-1 language that puts much effort into allowing you to define new languages and augment them in your project.
+<br>
+It's a really neat language and greatly reduces technical debt, but Racket has its downsides: It's slow.
+<br><br>
+Yes, even running on the machine I bought in the summer of 2016 the garbage collector simply pauses my entire application for 1-3 seconds every minute or two.
+<br>
+The program is a simple moving and scaling triangle. Even incremental GC doesn't help.
+<br>
+But I still like Racket. I also like Rust. It's nice. It's safe. It's a good language, but not as powerful as Racket in regards with its macros (until Rust gets procedural macros!).
+<br>
+What about making a Racket-Rust transpiler in Racket? Thusly augmenting the power of a lisp and the speed of Rust.
 
-In contemporary days it appears to be stated as a fact that diversity of biological entities is an objective good. I would like to investigate this claim, or hypothesis.
+Here's an example:
+<pre>
+#lang rust
 
-We can analyse the hypothesis from the perspective of The Law of Survival. At first we may claim that diversity is good (good as in constructive for a gene and its ability to be extant and fertile). When diversity is increased, there will necessarily be an increase in the different genes and their orderings thereof. I suppose this may cause the local cluster of individuals to be in a competition. Eventually there will be distinct races of individuals that express and assert their own superiority due to The Law of Survival.
+[fn main [] [
+	[println! "Hello World!"]
+]]
+</pre>
 
-Miscegenation may yield offspring that have subsets of both gene pools. These interbred individuals may (hybrid vigor) or may not (genetic outbreeding) have a higher fitness value and cause genetic drift to occur (if the population is sufficiently small).
+Would transpile to
+<pre>
+fn main() {
+	println!["Hello World!"];
+}
+</pre>
 
-The act of miscegenation will presumably have detrimental effects on your genetic lineage according to The Law of Survival. Unless of course your race was already doomed to start with. Then it is beneficial because the new entities (mixed offspring) still resemble you - to a lesser degree. Both pools will contain an overwhelming majority of the same genes. It can be a win or a loss depending on the case. This is observed from one individual belonging to a race in the population.
+Not the perfect example, but it captures the general idea. A good idea?
 
-We can also analyze the perspective of a biologist. Mixing different strains or races may more quickly yield different offspring; hence, also the ability for evolution to select for certain traits more quickly. That is interesting if we wish to create a better set of individuals for our own purpose.
-
-Finally we can look at emotivism. It appears some people are emotional. Some will attribute good to diversity. Under such an ethical system diversity is good via democratic vote. It is however an ethical basis that I would like to analyse a little closer. First off all I observe that emotivism may be the result of our evolutionary path. I suspect the current emotional balance in humans is such that some individuals may not be able to identify the dangers associated with individuals of vastly different races that are able to outbreed and replace them. The individuals have - what I suppose are - Evolutionary Artifacts. These were once beneficial traits that are still in a population but currently quite detrimental. I guess I’ll post about the idea at some later point in time.
-
-Essentially: diversity is positive or detrimental for a gene or a set thereof depending entirely on context.

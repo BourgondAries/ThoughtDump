@@ -1,17 +1,125 @@
-Blog. The Logical Fallacy of Color.
-<p>
-A common logical fallacy I encounter during debates on race is the following:
-</p>
-<p>
-Why does it matter what color your descendants are? Your black ancestors didn't seem to care. [Paraphrased from RationalWiki]
-</p>
-<br>
-<br>
+Rust. 2D Collision.
+<br><br>
+I've for a long time longed to create a game, but as most fantastic things, they have some prerequisites.
+<br><br>
+Games are incredibly difficult when it comes to collision detection. It's expensive. Each solution has a narrow application. Tradeoffs must be made. So I chose to go with something simple in the beginning: 2D tile collision.
 
-<p>
-First of all: the question attempts to strawman the racial discussion by stating that color is the only difference between the races. Proof: we can show that racial differences - although races are not rigidly defined for mammals - are normal reactions or appearances within a population. An example thereof is how different human races react to medicine. Another example is the population’s normal size, body weight, intelligence, etc.
-</p>
+<br><br>
+<h1>2D Tile Collision</h1>
+We're all familiar with the four if-statements to check if two rectangles are intersecting, but that's not a general approach to collision detection. In addition to detection, we need collision handling. This is where tiles come in handy.
+<br>
+A tile grid will look like the following:
+<pre>
+-------------
+| | | | | | |
+-------------
+| | | | | | |
+-------------
+| | |X|X|X|X|
+-------------
+| | | | | |X|
+-------------
+</pre>
+with n rows and m columns. The X values represent walls and the empty squares are air (None). We don't collide with air.
+<br><br>
+The tile grid (called TileNet) will be in its own virtual space where each tile is a square with length 1 on all sides. This makes computations much easier to perform.
+<br><br>
+We can now think of collision detection. Imagine a vertex on the grid moving to another. Assume the vertex comes from a position that does not collide with a wall. We must check if the end position collides with a wall. If it does, we can't move. But wait, what if our speed is so fast that we tunnel through walls? Then we can't just check the end position. Instead, we need to use the DDA supercover algorithm to find all intermediate tiles we touch.
 
-<p>
-Secondly: the second statement regarding black ancestors not caring is basically a fallacy of composition. Proof: By the same logic we can induce that your bacterial or primordial ancestors didn’t seem to care. Does this in any way validate actions that cause your descendants to be piles of bacteria? Am I attacking a strawman? Some may claim that I do; therefore, I’ll engage the statement directly: Why engage in activities that cause your descendants to be more dissimilar? Under The Law of Survival we must assert that we are superior by surviving as genes. The act of miscegenation will in most cases be having a detrimental effect on the genes. Unless you are otherwise doomed from existence: miscegenation is detrimental.
-</p>
+<pre>
+pub fn supercover(&self) -> SuperCover {
+	let (start, stop) = (self.0, self.1);
+	let new = stop - start;
+	let (vx, vy) = (new.0, new.1);
+	let slope_x = 1.0 + vy * vy / vx / vx;
+	let slope_y = 1.0 + vx * vx / vy / vy;
+	let (dx, dy) = (slope_x.sqrt(), slope_y.sqrt());
+
+	let (ix, iy) = (start.0.floor() as i32, start.1.floor() as i32);
+
+	let (sx, sy);
+	let (ex, ey);
+
+	if vx < 0.0 {
+		sx = -1;
+		ex = start.0.fract() * dx;
+	} else {
+		sx = 1;
+		ex = (1.0 - start.0.fract()) * dx;
+	}
+
+	if vy < 0.0 {
+		sy = -1;
+		ey = start.1.fract() * dy;
+	} else {
+		sy = 1;
+		ey = (1.0 - start.1.fract()) * dy;
+	}
+
+	let len = (stop.0.floor() as i64 - start.0.floor() as i64).abs() as usize +
+	          (stop.1.floor() as i64 - start.1.floor() as i64).abs() as usize;
+
+	SuperCover {
+		it: 0,
+		len: len,
+		dx: dx,
+		dy: dy,
+		sx: sx,
+		sy: sy,
+		ex: ex,
+		ey: ey,
+		ix: ix,
+		iy: iy,
+		dest_x: stop.0.floor() as i32,
+		dest_y: stop.1.floor() as i32,
+	}
+}
+</pre>
+
+This basically prepares a supercover iterator for us to walk through. The iterator returns pairs of coordinates (integers) that spawn at the boundaries of each cell.
+
+<pre>
+pub struct SuperCover {
+	it: usize,
+	len: usize,
+	dx: f32,
+	dy: f32,
+	sx: i32,
+	sy: i32,
+	ex: f32,
+	ey: f32,
+	ix: i32,
+	iy: i32,
+	dest_x: i32,
+	dest_y: i32,
+}
+
+impl SuperCover {
+	fn step_to_next_tile(&mut self) {
+		if self.ex < self.ey {
+			self.ex += self.dx;
+			self.ix += self.sx;
+		} else {
+			self.ey += self.dy;
+			self.iy += self.sy;
+		}
+	}
+}
+
+impl Iterator for SuperCover {
+	type Item = (i32, i32);
+	fn next(&mut self) -> Option<Self::Item> {
+		if self.it < self.len {
+			self.it += 1;
+			let old = Some((self.ix, self.iy));
+			self.step_to_next_tile();
+			old
+		} else if self.it == self.len {
+			self.it += 1;
+			Some((self.dest_x, self.dest_y))
+		} else {
+			None
+		}
+	}
+}
+</pre>

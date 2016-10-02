@@ -1,28 +1,15 @@
 <select name="page" onchange="httpGetAsyncPage(this.value,getPage);">
 <optgroup label="About">
-<option value="19"> Me</option>
+<option value="6"> Me</option>
 </optgroup>
 <optgroup label="Rust">
-<option value="18"> 2D Collision</option>
-<option value="17"> Racket</option>
-<option value="16"> Logging in slog-rs</option>
+<option value="5"> 2D Collision</option>
+<option value="4"> Racket</option>
+<option value="3"> Logging in slog-rs</option>
 </optgroup>
 <optgroup label="Blog">
-<option value="15"> Serializing Thoughts</option>
-<option value="14"> Violence is Golden</option>
-<option value="13"> Turning Off Emotions in Debates</option>
-<option value="12"> The Logical Fallacy of Color</option>
-<option value="11"> Ecological Diversity</option>
-<option value="10"> We're Never Superiour</option>
-<option value="9"> Computers and Transitivity</option>
-<option value="8"> Emotions</option>
-<option value="7"> Central Reproduction</option>
-<option value="6"> Dogmatic Atheism</option>
-<option value="5"> Ought We Abide?</option>
-<option value="4"> Evolutionary Utilitarianism</option>
-<option value="3"> Range of Importance</option>
-<option value="2"> Superorganism</option>
-<option value="1"> The Law of Survival</option>
+<option value="2"> Serializing Thoughts</option>
+<option value="1"> Violence is Golden</option>
 <option value="0"> The Common Survival Misconception</option>
 </optgroup>
 </select>

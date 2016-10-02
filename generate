@@ -5,6 +5,7 @@
 # The second sentence is the subheader.
 # Based on this, we can generate a cool navibar.
 
+rm pages/*
 # Process every page with m4
 for i in preprocessed_pages/*; do
 	m4 "$i" > pages/"${i#preprocessed_pages/}"

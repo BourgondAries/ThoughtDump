@@ -1,6 +1,6 @@
 Rust. Logging in slog-rs.
 <br><br>
-slog-rs is a library that allows us to compose loggers and output structured logs. But what are those things and why do I need them?
+<a href="https://github.com/dpc/slog-rs">slog-rs</a> is a library that allows us to compose loggers and output structured logs. But what are those things and why do I need them?
 <br><br>
 <h1>Structured Logging</h1>
 <br>
@@ -19,45 +19,39 @@ There is some consistency with the timestamp but it's a pain to parse. There is 
 <br>
 Structured logging is the solution. What it does is that it retains the structure as your write it. Normally our structure is completely serialized away and it allows us to write logs that don't follow a standard. Here is an example
 
-<pre>
-printf("%s INFO: Something happened my-value=%d", timestamp(), 39);
-</pre>
+<pre><code class="c">printf("%s INFO: Something happened my-value=%d", timestamp(), 39);
+</code></pre>
 
 Instead, we write the structure directly (Rust):
 
-<pre>
-info!["Something happened"; "my-value" => 39];
-</pre>
+<pre><code class="rust">info!["Something happened"; "my-value" => 39];
+</code></pre>
 
 Which may write:
-<pre>
-{"ts":"2016-10-02T01:52:40.130758776+02:00","level":"INFO","msg":"Something happened","my-value":39}
-</pre>
+<pre><code class="js">{"ts":"2016-10-02T01:52:40.130758776+02:00","level":"INFO","msg":"Something happened","my-value":39}
+</code></pre>
 
 You can choose different styles and even choose a human-friendly style to write to the terminal.  Slog has it all.
 <br><br>
 <h1>Composable Logging</h1>
 Another key part of slog-rs is composable logging. This means that you can create subloggers of loggers.
 
-<pre>
-let logger = slog::Logger::root(slog_term::streamer().build().ignore_err(), o![]);
+<pre><code class="rust">let logger = slog::Logger::root(slog_term::streamer().build().ignore_err(), o![]);
 let sublogger = logger.new(o!["context" => "my context"]);
 info![logger, "my message"; "key" => "value"];
-</pre>
+</code></pre>
 
 o! is a key-value store. When creating a logger it can use o! to create a static (or even dynamic!) store. Every time you log, the store will also be logged.
 <br><br>
 <h1>Scopes</h1>
 Probably my favorite part of the library is that it's so extendible. The slog-scope crate takes logging to a next level of ergonomics. Instead of applying the logger for every logging call manually, a thread-local logger is used. This works well with scopes, as you never need to pass the logger through functions!
-<pre>
-let logger = slog::Logger::root(slog_term::streamer().build().ignore_err(), o![]);
+<pre><code class="rust">let logger = slog::Logger::root(slog_term::streamer().build().ignore_err(), o![]);
 slog_scope::set_global_logger(logger);
 
 slog_scope::scope(slog_scope::logger().new(o!["sublogger" => "value"]), || {
 	info!["This uses the sublogger"];
 });
-</pre>
-<br><br>
+</code></pre>
 I think the slog-scope crate is the way to go. It has the best ergonomics and simply adheres to the idea that loggers shouldn't be passed explicitly. I agree with this, as logging is so ubiquitous.
 <br><br>
 
@@ -66,3 +60,21 @@ I think the slog-scope crate is the way to go. It has the best ergonomics and si
 You have a single go-to logging facility that outputs easily parsed log files in whatever format you desire. You can easily manage contexts of logging and levels.
 <br><br>
 After having to have parsed free-form log files for a few weeks, I think slog-rs is a worthy investment.
+<br><br>
+<h1>Complete Example</h1>
+<pre><code class="rust">#[macro_use (o, slog_log, slog_trace, slog_debug, slog_info, slog_warn, slog_error)]
+extern crate slog;
+#[macro_use]
+extern crate slog_scope;
+extern crate slog_term;
+
+use slog::DrainExt;
+
+fn main() {
+	let log = slog::Logger::root(slog_term::streamer()
+		.async().stderr().full().build().fuse(), o![]);
+	slog_scope::set_global_logger(log);
+
+	info!["Log my message!"];
+}
+</code></pre>

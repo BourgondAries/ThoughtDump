@@ -1,33 +1,47 @@
 Rust. 2D Collision.
 <br><br>
-I've for a long time longed to create a game, but as most fantastic things, they have some prerequisites.
+I've for a long time longed to create a game, but collision detection and handling was always done in an informal, 'if-hell' way. Collision detection is one of the cornerstones of any game, and tackling it is a high priority.
 <br><br>
-Games are incredibly difficult when it comes to collision detection. It's expensive. Each solution has a narrow application. Tradeoffs must be made. So I chose to go with something simple in the beginning: 2D tile collision.
+Games are incredibly difficult when it comes to collision detection. It's expensive, and each solution has a narrow application. Tradeoffs must be made. So I chose to go with something simple to start out with: 2D tile collision.
 
 <br><br>
 <h1>2D Tile Collision</h1>
-We're all familiar with the four if-statements to check if two rectangles are intersecting, but that's not a general approach to collision detection. In addition to detection, we need collision handling. This is where tiles come in handy.
+So why choose 2D and tile based collision?
+<br>
+First, 2D is just simpler than 3D.
+<br>
+Secondly, tiles are static in position. They are easily looked up in an array, and are probably one of the lightest form of collision detection.
+<br><br>
+I think we're all familiar with the four if-statements to check if two rectangles are intersecting, but that's not a general approach to collision detection. In addition to detection, we need collision handling. This is where tiles come in handy.
 <br>
 A tile grid will look like the following:
-<pre>
--------------
-| | | | | | |
--------------
-| | | | | | |
--------------
-| | |X|X|X|X|
--------------
-| | | | | |X|
--------------
-</pre>
-with n rows and m columns. The X values represent walls and the empty squares are air (None). We don't collide with air.
+<br><br>
+<img src="img/tile_grid_tile_net.png" alt="grid">
+<br>
+Obstructables can be colored tiles. Empty tiles will be <i>None</i>. We don't collide with <i>None</i>.
 <br><br>
 The tile grid (called TileNet) will be in its own virtual space where each tile is a square with length 1 on all sides. This makes computations much easier to perform.
+<br>
+The origin of the tile net is at (0, 0), and for simplicity's sake the indices should only be natural numbers.
 <br><br>
-We can now think of collision detection. Imagine a vertex on the grid moving to another. Assume the vertex comes from a position that does not collide with a wall. We must check if the end position collides with a wall. If it does, we can't move. But wait, what if our speed is so fast that we tunnel through walls? Then we can't just check the end position. Instead, we need to use the DDA supercover algorithm to find all intermediate tiles we touch.
-
-<pre>
-pub fn supercover(&self) -> SuperCover {
+We can now think of collision detection. Imagine a vertex on the grid moving to another position. Assume the vertex comes from a position that does not collide with a wall. We must check if the end position collides with a wall. If it does, we can't move. But wait, what if our speed is so fast that we tunnel through walls? Then we can't just check the end position. Instead, we need to use the DDA supercover algorithm to find all intermediate tiles we touch.
+<br><br>
+<img src="img/supercover_dda_move.png" alt="DDA Supercover example">
+<br>
+Red box: hitbox
+<br>
+Red line: respective vertex interpolation
+<br>
+Grey squares: touched by the interpolation.
+<br><br>
+You can see that we can determine if there is a collision using the set of touched tiles.
+<br>
+This form of collision detection allows arbitrarily shaped objects to collide with the grid. It even allows rotations!
+<br><br>
+The supercover DDA algorithm is presented here. It's an extension of Bresenham's line drawing algorithm. The algorithm finds the closest edge of the cell it is currently in, and increments either an x or y counter. In addition, it increments a remainder term used for the next calculation.
+<br>
+First we prepare the supercover iterator.
+<pre><code class="rust">pub fn supercover(&self) -> SuperCover {
 	let (start, stop) = (self.0, self.1);
 	let new = stop - start;
 	let (vx, vy) = (new.0, new.1);
@@ -74,12 +88,12 @@ pub fn supercover(&self) -> SuperCover {
 		dest_y: stop.1.floor() as i32,
 	}
 }
-</pre>
+</code></pre>
 
-This basically prepares a supercover iterator for us to walk through. The iterator returns pairs of coordinates (integers) that spawn at the boundaries of each cell.
-
-<pre>
-pub struct SuperCover {
+This basically prepares a supercover iterator for us to walk through. The iterator returns coordinates (pairs of integers) that denote the indices of its respective cell.
+<br><br>
+The structure of the supercover iterator.
+<pre><code class="rust">pub struct SuperCover {
 	it: usize,
 	len: usize,
 	dx: f32,
@@ -93,8 +107,10 @@ pub struct SuperCover {
 	dest_x: i32,
 	dest_y: i32,
 }
+</code></pre>
 
-impl SuperCover {
+The next-tile stepping function. The error terms (ex and ey) are compared to see which boundary the point is closest to. The point is then moved across that boundary whilst the error in the other direction is added.
+<pre><code class="rust">impl SuperCover {
 	fn step_to_next_tile(&mut self) {
 		if self.ex < self.ey {
 			self.ex += self.dx;
@@ -105,8 +121,10 @@ impl SuperCover {
 		}
 	}
 }
+</code></pre>
 
-impl Iterator for SuperCover {
+The iterator iterates over the expected amount of blocks. This algorithm needs to add a final position to ensure that small angle movements behave correctly. A small-angle movement is a movement of the object where floating point errors can manifest themselves.
+<pre><code class="rust">impl Iterator for SuperCover {
 	type Item = (i32, i32);
 	fn next(&mut self) -> Option<Self::Item> {
 		if self.it < self.len {
@@ -122,4 +140,84 @@ impl Iterator for SuperCover {
 		}
 	}
 }
-</pre>
+</code></pre>
+
+An example of such an error is the move from (0, 0) to (10000, 1.0000001). The floating point errors may give us a final position of (10000, 1). This becomes a problem for the collision handler. If (10000, 1) is the last tile then the collision handler may state that the move is legal, which moves the object inside (10000, 1.0000001)! Hence why we add the final term directly, this guarantees that the final position is checked.
+<br>
+The state is kept consistent: the entity is never having a vertex occupy a tile.
+
+<br><br>
+<h1>Overheight</h1>
+Another error that may occur is on where the vertices of a connected entity do not consider values between vertices.
+<br><br>
+<img src="img/overheight.png" alt="Overheight">
+
+As you can see, the middle row isn't touched at all, but should normally block the entity.
+<br>
+To combat this, each entity will need to define its vertices with a maximum distance of 1 between each vertex.
+<br><br>
+<h1>Collision Handling</h1>
+Handling the collisions is different from detecting them. We get a set of tiles we collide with from the supercover algorithm. We can already devise simple rules for movement and collision:
+
+<pre><code class="rust">// Create a new entity
+let mut my_object = MyObject::new();
+// Set its movement vector
+my_object.enqueue(Vector(0.0, -9.81));
+loop {
+	// Get the iterator over all tiles we collide with using the enqueued movement vector
+	let tiles = tile_net.collide_set(my_object.tiles());
+	if !my_object.resolve(tiles) {
+		break;
+	}
+}
+</code></pre>
+
+What's going on here?
+<br>
+First define a few requirements for our object:
+<br>
+1. 'enqueue' sets or adds the movement vector for the current frame.
+<br>
+2. 'queued' gets the current movement vector of the entity.
+<br>
+3. 'resolve' returns 'true' if it can't move and requests a new iteration. 'false' if it is done.
+<br>
+4. 'points' returns a set of vertices of the object.
+<br><br>
+The function 'tiles' uses 'points' and returns an iterator that returns all coordinates the movement vectors collide with.
+<br>
+This iterator is given to 'tile_net' (the grid), which returns an iterator over the actual tiles.
+<br>
+The object then calls 'resolve' with those tiles as its argument.
+<br><br>
+
+What happens inside 'resolve' can be as simple as the following:
+
+<pre><code class="rust">fn resolve<'a, T, I>(&mut self, mut set: TileSet<'a, T, I>) -> bool {
+	let mut mov = self.mov;
+	self.mov = Vector(0.0, 0.0);
+	if set.all(Option::is_none) {
+		self.pos = self.pos + mov;
+		false
+	} else if mov.norm2sq() > 1e-6 {
+		mov.scale(0.9);
+		self.mov = mov;
+		true
+	} else {
+		false
+	}
+}
+</code></pre>
+
+Let's analyze what this code actually does. When all elements of the collision set are <i>None</i>, the position is set according to move and false is returned, so the loop breaks.
+<br>
+If there is a collision, the movement vector is scaled down and we return true. This means the loop tries again. This time, the scaling may cause no collision, and we then get a succesful move.
+<br>
+If we still get collisions after many scalings, then we'd like to stop. An example is when the entity is standing on a solid block with gravity affecting him. He will never be able to move, so we then just return false in the last else.
+<br><br>
+The reason for scaling is that we're already inside some object. The frame time puts us there, so anything within the range of the frame time is a valid movement. This allows us to approximate touching the tile.
+<br><br>
+Movements are small most of the time, and iterators in Rust are mainly compiled to efficient code. Performance should not be a problem. The real use of this algorithm is for high-velocity components such as bullets or lazers.
+<br><br>
+We can implement all sorts of collision handling in the loop and the 'resolve' function, which makes this system quite robust.
+

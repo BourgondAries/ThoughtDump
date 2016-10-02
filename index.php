@@ -3,9 +3,13 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width; maximum-scale=1; minimum-scale=1;" />
+		<link rel="icon" type="image/png" href="img/musings_symbol_16.png">
+		<link rel="icon" type="image/png" href="img/musings_symbol_32.png">
+		<link rel="icon" type="image/png" href="img/musings_symbol_64.png">
 		<link rel="stylesheet" type="text/css" href="reset.css">
-		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/default.min.css">
-		<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+		<link rel="stylesheet" href="highlight/default.css">
+		<script src="highlight/highlight.pack.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
 		<style>
 			.col-md-5 { width: 20%; }
 			@media(max-width: 1200px) {
@@ -23,10 +27,9 @@
 			button { background: #232b30; border: 1px solid #1c252b; color: #9fa8b0; font-weight: bold; height: 3vh; margin: 0; padding: 0; outline: 0; width: 20%; }
 			button:hover { color: #fff; background: #4C5A64; }
 			select { border: 1px solid #1c252b; display: inline; font-weight: bold; height: 3vh; margin-right: 0; width: 20%; }
+			img { width: 100%; }
 			p { line-height: 180%; }
-			pre { background-color: rgba(235, 236, 228, 0.2); color: #BBBBBB; font-family: monospace; margin: 1vh 0 1vh 0; padding: 1vh 1vw 1vh 1vw; white-space: pre-wrap; word-wrap: break-word; }
-			pre .line-number { float: left; margin: 0 1em 0 -1em; border-right: 1px solid; text-align: right; }
-			pre .line-number span { display: block; padding: 0 .5em 0 1em; }
+			pre { background-color: rgba(235, 236, 228, 0.2); color: #BBBBBB; font-family: monospace; font-size: 0.8em; line-height: 1.2em; margin: 1vh 0 1vh 0; padding: 0; white-space: pre-wrap; word-wrap: break-word; }
 		</style>
 		<title>Evo's Musings</title>
 	</head>

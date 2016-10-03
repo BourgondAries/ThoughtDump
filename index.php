@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width; maximum-scale=1; minimum-scale=1;" />
+		<meta name="viewport" content="width=device-width,maximum-scale=1, minimum-scale=1" />
 		<link rel="icon" type="image/png" href="img/musings_symbol_16.png">
 		<link rel="icon" type="image/png" href="img/musings_symbol_32.png">
 		<link rel="icon" type="image/png" href="img/musings_symbol_64.png">
@@ -40,37 +40,38 @@
 
 			$page = $_GET['page'];
 			if (!isset($page))
-				$page = 0;
+				$page = "0;0";
 
-			echo "<div id=\"navivalue\" hidden>$page</div>";
+			$pages = explode(";", $page);
+			$page = $pages[0];
+			$topic = $pages[1];
 
 			$page = intval($page);
-			echo generateNavibar($page);
+			$topic = intval($topic);
+			echo generateNavibar($page, $topic);
 		?>
 			<div class="content">
 			<?php
-				if (doesPageExist($page)) {
+				if (doesPageExist($page, $topic)) {
 					echo getVerticalSpace();
-					echo getPage($page);
+					echo getPage($page, $topic);
 				}
 				else {
-					echo generateNavibar($page);
-					echo '<div class="vertical space"></div>';
-					echo '<pre> This part of the tutorial is not present </pre>';
+					echo '<pre> This page does not exist! </pre>';
 				}
 			?>
 			</div>
 		</div>
 		<?php
 			echo getVerticalSpace();
-			echo generateNavibar($page);
+			echo generateNavibar($page, $topic);
 		?>
 	</body>
 	<script>
 		function setSelects(value) {
 			selects = document.getElementsByTagName("select");
 			for (i = 0; i < selects.length; ++i) {
-				selects[i].selectedIndex = selects[i].length - value - 1;
+				selects[i].selectedIndex = value;
 			}
 		}
 		setSelects(document.getElementById('navivalue').innerHTML);
@@ -78,19 +79,22 @@
 			document.open();
 			document.write(response);
 			document.close();
+
 			setSelects(selected);
 		}
-		function httpGetAsyncPage(theUrl, callback) {
+		function httpGetAsyncPage(theUrl, selectedIndex, callback) {
 			selected = theUrl;
 			theUrl = "?page=".concat(theUrl);
 			var xmlHttp = new XMLHttpRequest();
 			xmlHttp.onreadystatechange = function() {
 				if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-					callback(xmlHttp.responseText, selected);
+					callback(xmlHttp.responseText, selectedIndex);
 				}
 			xmlHttp.open("GET", theUrl, true); // true for asynchronous
 			xmlHttp.send(null);
 		}
+
+		// Add line numbers to pre (Doesn't work with word-wrap)
 		(function() {
 			return;
 			var pre = document.getElementsByTagName('pre'),

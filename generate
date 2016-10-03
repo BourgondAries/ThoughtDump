@@ -5,29 +5,50 @@
 # The second sentence is the subheader.
 # Based on this, we can generate a cool navibar.
 
-rm pages/*
+touch pages/marker
+rm -r pages/*
+
 # Process every page with m4
-for i in preprocessed_pages/*; do
-	m4 "$i" > pages/"${i#preprocessed_pages/}"
+count=0
+for j in preprocessed_pages/*; do
+	mkdir -p pages/${j#preprocessed_pages/}
+	for i in $(ls $j/* | sort -nr); do
+		m4 "$i" > pages/"${i#preprocessed_pages/}"
+		echo "<div id=\"navivalue\" hidden>$count</div>" >> pages/"${i#preprocessed_pages/}"
+		: $((++count))
+	done
 done
 
 cd pages/
 out=../autogen/navigation
-echo '<select name="page" onchange="httpGetAsyncPage(this.value,getPage);">' > "$out"
+echo '<select name="page" onchange="httpGetAsyncPage(this.value,this.selectedIndex,getPage);">' > "$out"
 lasthead=
 
-for i in $(ls | sort -rn); do
-	line=$(cat $i | head -n 1)
-	head=$(echo "$line" | cut -d '.' -f 1)
-	if [ "$head" != "$lasthead" ]; then
-		if [ "$lasthead" != '' ]; then
-			echo '</optgroup>' >> "$out"
+for j in $(ls | sort -n); do
+	cd $j
+	for i in $(ls | sort -rn); do
+		if [ -d $i ]; then
+			break
 		fi
-		echo "<optgroup label=\"$head\">" >> "$out"
-	fi
-	lasthead="$head"
-	sub=$(echo "$line" | cut -d '.' -f 2)
-	echo "<option value=\"$i\">${sub% }</option>" >> "$out"
+		line=$(cat $i | head -n 1)
+		head=$(echo "$line" | cut -d '.' -f 1)
+		if [ "$head" != "$lasthead" ]; then
+			if [ "$lasthead" != '' ]; then
+				cd ..
+				echo '</optgroup>' >> "$out"
+				cd $j
+			fi
+			cd ..
+			echo "<optgroup label=\"$head\">" >> "$out"
+			cd $j
+		fi
+		lasthead="$head"
+		sub=$(echo "$line" | cut -d '.' -f 2)
+		cd ..
+		echo "<option value=\"$i;$j\">${sub% }</option>" >> "$out"
+		cd $j
+	done
+	cd ..
 done
 
 echo '</optgroup>' >> "$out"

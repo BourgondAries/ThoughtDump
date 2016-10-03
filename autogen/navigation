@@ -1,15 +1,15 @@
-<select name="page" onchange="httpGetAsyncPage(this.value,getPage);">
+<select name="page" onchange="httpGetAsyncPage(this.value,this.selectedIndex,getPage);">
 <optgroup label="About">
-<option value="6"> Me</option>
+<option value="0;0"> Me</option>
 </optgroup>
 <optgroup label="Rust">
-<option value="5"> 2D Collision</option>
-<option value="4"> Racket</option>
-<option value="3"> Logging in slog-rs</option>
+<option value="2;1"> 2D Collision</option>
+<option value="1;1"> Racket</option>
+<option value="0;1"> Logging in slog-rs</option>
 </optgroup>
 <optgroup label="Blog">
-<option value="2"> Serializing Thoughts</option>
-<option value="1"> Violence is Golden</option>
-<option value="0"> The Common Survival Misconception</option>
+<option value="2;2"> Serializing Thoughts</option>
+<option value="1;2"> Violence is Golden</option>
+<option value="0;2"> The Common Survival Misconception</option>
 </optgroup>
 </select>

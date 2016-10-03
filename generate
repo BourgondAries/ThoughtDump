@@ -13,8 +13,12 @@ count=0
 for j in preprocessed_pages/*; do
 	mkdir -p pages/${j#preprocessed_pages/}
 	for i in $(ls $j/* | sort -nr); do
-		m4 "$i" > pages/"${i#preprocessed_pages/}"
-		echo "<div id=\"navivalue\" hidden>$count</div>" >> pages/"${i#preprocessed_pages/}"
+		curpage=pages/"${i#preprocessed_pages/}"
+		m4 "$i" >> "$curpage"
+		echo "<br><br>" >> "$curpage"
+		echo "Last modified: " >> "$curpage"
+		stat -c %y "$i" >> "$curpage"
+		echo "<div id=\"navivalue\" hidden>$count</div>" >> "$curpage"
 		: $((++count))
 	done
 done

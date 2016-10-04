@@ -3,6 +3,7 @@
 <option value="0;0"> Me</option>
 </optgroup>
 <optgroup label="Rust">
+<option value="3;1"> The Kalman Filter</option>
 <option value="2;1"> 2D Collision</option>
 <option value="1;1"> Racket</option>
 <option value="0;1"> Logging in slog-rs</option>

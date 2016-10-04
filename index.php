@@ -6,6 +6,12 @@
 		<link rel="icon" type="image/png" href="img/musings_symbol_16.png">
 		<link rel="icon" type="image/png" href="img/musings_symbol_32.png">
 		<link rel="icon" type="image/png" href="img/musings_symbol_64.png">
+		<script type="text/x-mathjax-config">
+			MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+		</script>
+		<script type="text/javascript" async
+			src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+		</script>
 		<link rel="stylesheet" type="text/css" href="reset.css">
 		<link rel="stylesheet" href="highlight/default.css">
 		<script src="highlight/highlight.pack.js"></script>

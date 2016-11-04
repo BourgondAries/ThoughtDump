@@ -24,7 +24,7 @@
 			.content { margin-left: 33vw; width: 33vw; word-wrap: break-word; } }
 			.prefoot { min-height: 96vh; }
 			.vertical.space { height: 1vh; }
-			body { background-color: black; color: #4C4C4C; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 15px; line-height: 24px; width: 100vw; }
+			body { background-color: black; color: #5C5C5C; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 15px; line-height: 24px; width: 100vw; }
 
 			strong { font-weight: bold; }
 			h1 { font-size: 200%; font-style: bold; }

@@ -249,3 +249,14 @@ The biggest issue with this method is that the collision overall becomes of orde
 All entities are registered in a list of indices. Any time indices overlap you need to check the respective entities by using normal box-collision.
 <br><br>
 This allows the arrow to use its supercover to mark tiles it will travel through.
+<br><br>
+<h1>Integration Method</h1>
+The idea behind - what I call - the integration method is to virtually 'integrate' the current hitbox into the next position at another time.
+<br><br>
+<img src="img/gjk_time_2d.png" alt="2d space integrated into 3-space">
+<br><br>
+If the extended rectangles intersect, then there is a collision. This is a continuous method because the entire timestep will be solved for. We can use the GJK algorithm to find the the boxes intersect.
+<br>
+For my system I will probably end up with this because it allows for perfect and fast collision detection. In addition to this, one may need to use a quadtree for many entities.
+<br>
+The length of the time step can just be 1. You can use any value, but if I'm not mistaken 1 will give you the fewest floating point errors.

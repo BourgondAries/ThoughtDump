@@ -1,10 +1,10 @@
 Math. Notation.
 <br><br>
 <h1>New Home</h1>
-Mathematics is plagued by inconsistencies that obscure mathematical meaning. One such example is the way we write matrix multiplication. The standard notation is write a juxtaposition of matrices: $AB$, but this makes it hard to distinguish multi-letter symbols. Thus, some authors choose $A\cdot B$, but this is inconsistent with the dot-product for vectors, in which the first argument is transposed: $A\cdot B = T(A) \space B$. Another inconsistency is the use of the exponentiation operator. Where a transpose is often written $A^T$. The exponential is supposed to mean repetition of the same expression. The laplacian operator breaks this: $\nabla^2 = \nabla\cdot\nabla$ while also using the vector dot-product inconsistency. Inconsistencies within this realm are common.
+Mathematics is plagued by inconsistencies that obscure mathematical meaning. One such example is the way we write matrix multiplication. The standard notation is write a juxtaposition of matrices: $AB$, but this makes it hard to distinguish multi-letter symbols. Thus, some authors choose $A\cdot B$, but this is inconsistent with the dot-product for vectors, in which the first argument is transposed: $A\cdot B = T(A) \space B$. Another inconsistency is the use of the exponentiation operator. Where a transpose is often written $A^T$. The exponential is supposed to mean repetition of the same expression. The laplacian operator breaks this: $\nabla^2 = \nabla\cdot\nabla$ while also using the vector dot-product inconsistency. Another inconsistency is when one integrates over the differential k-form where argument insertion is implied. This implicitness in some of mathematics makes it difficult. Inconsistencies within this realm are common.
 In addition to solving inconsistencies, we must allow the use of multi-letter symbols to make mathematics easier to read.
 <br>
-I propose a simple operator based and tensor friendly mathematics that solves these problems.
+I propose a simple lambda-calculus based mathematics that solves these problems.
 
 <br><br>
 <h1>Symbols</h1>
@@ -42,146 +42,50 @@ And so on.<br>
 Tuples denote column vectors: $ (x_1, x_2, ..., x_n) = T[x_1, x_2, ..., x_n] $. Tuples are written using parentheses. A single-element tuple is written $ (x,) $. The T operator denotes transposition. Vectors and tuples may have trailing commas.
 
 <br><br>
-<h1>Tensor Extractor</h1>
-The tensor extractor is an operator that extracts an entry from a tensor.
-$$ \lambda $$
-is the tensor extraction operator.
-$$ \lambda_3 $$
-Denotes the third element of the tensor:
-$$ \lambda_3 (x,y,z) = z $$
-where $ \lambda(x,y,z) $ is a tuple. A tuple must by necessity be a column vector.
-Commas in the tensor extractor denote dimension:
-$$ \lambda_{2,3}
-\begin{bmatrix}
-a, & b, & c \\
-d, & e, & f \\
-g, & h, & i
-\end{bmatrix}
-=
-f
-$$
-Tensor extractors can also operate on ranges, given by colons:
-$$ \lambda_{2,2:3}
-\begin{bmatrix}
-a, & b, & c \\
-d, & e, & f \\
-g, & h, & i
-\end{bmatrix}
-=
-[e, f]
-$$
-Omitted trailing dimensions means "all entries":
-$$ \lambda_{2}
-\begin{bmatrix}
-a, & b, & c \\
-d, & e, & f \\
-g, & h, & i
-\end{bmatrix}
-=
-[d, e, f]
-$$
-To access all elements in previous dimensions:
-$$ \lambda_{:,2}
-\begin{bmatrix}
-a, & b, & c \\
-d, & e, & f \\
-g, & h, & i
-\end{bmatrix}
-=
-\begin{bmatrix}
-b \\
-e \\
-h
-\end{bmatrix}
-$$
-Alternatively one can use implicit end values via omittance:
-$$ \lambda_{2:,2}
-\begin{bmatrix}
-a, & b, & c \\
-d, & e, & f \\
-g, & h, & i
-\end{bmatrix}
-=
-\begin{bmatrix}
-e \\
-h
-\end{bmatrix}
-$$
-This is particularly useful when the size is not known beforehand. All indices start at 1. Negative indices can be used, where $-1$ is the last element in that dimension.
-You can also specify multiple ranges using a semicolon:
-$$ \lambda_{2:,1;3:}
-\begin{bmatrix}
-a, & b, & c \\
-d, & e, & f \\
-g, & h, & i
-\end{bmatrix}
-=
-\begin{bmatrix}
-d, & f \\
-g, & i
-\end{bmatrix}
-$$
-Extracting the entire tuple is a matter of specifying an all-dimensional element:
-$$ \lambda_{:}
-\begin{bmatrix}
-a, & b, & c \\
-d, & e, & f \\
-g, & h, & i
-\end{bmatrix}
-=
-\begin{bmatrix}
-a, & b, & c \\
-d, & e, & f \\
-g, & h, & i
-\end{bmatrix}
-$$
-
-<br><br>
 <h1>Functions</h1>
-Functions are expressions that map tensors to tensors using tensor extractors. A function always refers to its parameters via those extractors. A function is always a right-facing operator.
+Functions are expressions that map mathematical objects. A function always refers to its parameters via lambda enumerators. A function is always a right-facing operator.
 <br>
 Example 1:
 $$ F = \lambda_1 $$
-This function maps the first argument of its tuple. If we supply a tuple, we get $ F(x) = x $.
+This function maps the first argument to itself. If we supply a tuple, we get $ F(x) = x $.
 
 <br>
 Example 2:
 $$ F = \lambda_2 $$
-This function maps the second argument of its tuple. If we supply a tuple, we get $ F(x, y) = y $.
+This function maps the second argument of its tuple. If we supply two arguments we get $ F(x)(y) = y $.
 
 <br>
 Example 3:
 $$ F = \lambda_2 - \lambda_1 $$
-If we supply a tuple, we get $ F(x, y) = y - x $.
+If we supply one argument, we get $ F(x) = \lambda_1 - x $. Every time an argument is provided, $ \lambda_1 $ is replaced by the argument. All other $ \lambda_n $ are decremented.
+If we supply two arguments, we get $ F(x)(y) = y - x $.
 
 <br>
 Example 4:
-$$ F = \lambda(\lambda_2 \lambda_1) $$
-If we supply a tuple, we get $ F(x, y) = y\cdot x $. Notice how we provide an outer $ \lambda $. The reason for doing this is to apply insertion of A into all extractors:
-$$ \lambda(\lambda_2\lambda_1)A \neq \lambda_2\lambda_1A $$
-as
-$$ \lambda(\lambda_2\lambda_1)A = A_2A_1 \neq \lambda_2\lambda_1A = \lambda_2A_1 = A_{1,2} $$
+$$ F = \lambda_2 \lambda_1 $$
+If we supply a tuple, we get $ F(x)(y) = y\cdot x $.
 
 <br>
 Example 5:
-$$ F = \lambda(\bar{\lambda}_2 A\space \lambda_1) $$
-If we supply a tuple, we get $ F(x) = A_2 x $. Notice how we provide a $ \bar{\lambda} $. This symbol denotes eager evaluation and won't be filled in by the outer $\$$.
+$$ F = A_2 \space \lambda_1 $$
+If we supply an argument, we get $ F(x) = A_2 x $.
 
 <br><br>
 <h1>Implicit Pattern</h1>
 The pattern
-$$ \lambda(X\space \lambda_:) $$
+$$ (: X \space \lambda) $$
 can always be written as
 $$ X $$
-since there is no semantic difference.
+since there is no semantic difference.<br>
+This is called an $ \eta $-reduction.
 
 <br><br>
 <h1>Sums and Products</h1>
 Sums and products are operators:
 
-$$ \sum_{i=n}^N = \lambda(\lambda_:(i) + \lambda_:(i+1) + ... + \lambda_:(N)) $$
+$$ \sum_{i=n}^N = (: \lambda(i) + \lambda(i+1) + ... + \lambda(N)) $$
 
-$$ \prod_{i=n}^N = \lambda(\lambda_:(i) \cdot \lambda_:(i+1) \cdot ... \cdot \lambda_:(N)) $$
+$$ \prod_{i=n}^N = (: \lambda(i) \cdot \lambda(i+1) \cdot ... \cdot \lambda(N)) $$
 
 <br><br>
 <h1>Partial Derivatives</h1>
@@ -192,7 +96,10 @@ $$ \partial_1 \lambda(\lambda_1 \lambda_2) = \lambda(\lambda_2) $$
 <br><br>
 <h1>Total Derivatives</h1>
 The total derivative operator is $d$. It is defined as:
-$$ d = $\left(\sum_{i=0}^\infty \partial_i \lambda_: d(i)\right) $$
+$$ d = \lambda^2\left(\sum_{i=1}^\infty \partial_i \lambda_:\lambda\lambda_: d(\lambda\lambda_i)\right) $$
+$$ d\space f = \lambda\left(\sum_{i=1}^\infty \partial_i f \space \lambda_:d(\lambda_i)\right) = \lambda\left(\partial_1 f\space\lambda_: \space d(\lambda_1) + \partial_2 f\space \lambda_:\space d(\lambda_2) + ... \right) $$
+$$ d\space f\space (x,y,z) = \sum_{i=1}^\infty \partial_i f \space (x,y,z)d((x,y,z)_i) = \left(\partial_1 f(x,y,z)\space d(x) + \partial_2 f(x,y,z)\space d(y) + ... \right) $$
+Is this an acceptable use and definition of the lambda? I'd like to investigate this further.
 
 <br><br>
 <h1>Nabla</h1>
@@ -202,7 +109,7 @@ It is a column vector of all partial derivative operators.<br>
 The operator can be limited by an extractor:
 $$ \bar{\lambda}_{:3}\nabla = (\partial_1, \partial_2, \partial_3) $$
 For convenience we define $\bar{\nabla}$ to avoid cumbersome expressions:
-$$ \bar{\nabla} = \lambda(\bar{\lambda}_{:size(\lambda_:)}\nabla \space \lambda_:) $$
+$$ \bar{\nabla} = \bar{\lambda}_{:arity(\lambda)}\nabla \space \lambda $$
 
 <br><br>
 <h1>Gradient</h1>
@@ -313,18 +220,18 @@ $$ f = (a_1f_1, a_2f_2,...,a_nf_n) $$
 <br><br>
 <h1>Fundamental Theorem of Calculus</h1>
 FToC can be written as:
-$$ \int_{a}^b d(r) \nabla\space \lambda_:(r) = \lambda(\lambda_:(b) - \lambda_:(a)) $$
+$$ \lambda(\int_{a}^b d(r) \nabla\space \lambda_:(r)) = \lambda(\lambda_:(b) - \lambda_:(a)) $$
 
 <br><br>
 <h1>Stokes' Theorem</h1>
 Stokes' theorem can be written as:
 $$ \int_M d\space w = \int_{\partial M} w $$
 Suppose we have the differential form:
-$$ w = \lambda(\lambda_{1,1}d\space \lambda_{2,2}\wedge \lambda_{2,3} + \lambda_{1,2}d\space \lambda_{2,3} \wedge \lambda_{2,1} + \lambda_{1,3}d\space \lambda_{2,1}\wedge \lambda_{2,2}) $$
+$$ w = \lambda^2(\lambda_{1,1}d\space \lambda_{2,2}\wedge \lambda_{2,3} + \lambda_{1,2}d\space \lambda_{2,3} \wedge \lambda_{2,1} + \lambda_{1,3}d\space \lambda_{2,1}\wedge \lambda_{2,2}) $$
 The differential of $w$:
-$$ d\space w = d\space \lambda(\lambda_{1,1}d\space \lambda_{2,2}\wedge \lambda_{2,3} + \lambda_{1,2}d\space \lambda_{2,3} \wedge \lambda_{2,1} + \lambda_{1,3}d\space \lambda_{2,1}\wedge \lambda_{2,2}) $$
+$$ d\space w = d\space \lambda^2(\lambda_{1,1}d\space \lambda_{2,2}\wedge \lambda_{2,3} + \lambda_{1,2}d\space \lambda_{2,3} \wedge \lambda_{2,1} + \lambda_{1,3}d\space \lambda_{2,1}\wedge \lambda_{2,2}) $$
 And thus:
-$$ d\space w(F,R) = d\space (F_1d(R_2\wedge R_3) + F_2d(R_3 \wedge R_1) + F_3d(R_1\wedge R_2)) $$
+$$ d\space w(F,R) = (d\space \lambda(F_1d(R_2\wedge R_3) + F_2d(R_3 \wedge R_1) + F_3d(R_1\wedge R_2))) $$
 Applying the derivative operator to the functions:
 $$ d\space R_1 = \partial_1 R_1d(1) + \partial_2 R_1 d(2) $$
 $$ \Rightarrow d\space R_1\wedge\space d\space R_2 = (\partial_1 R_1d(1) + \partial_2 R_1 d(2))\wedge(\partial_1 R_2d(1) + \partial_2 R_2 d(2)) $$
@@ -342,13 +249,90 @@ $$ \Rightarrow d\space R_3\wedge\space d\space R_1 = (\partial_1R_3\partial_2R_1
 Inserting these definitions into Stokes' theorem we get:
 $$ \int_V d\left((F_1(\partial_1R_2\partial_2R_3 - \partial_2R_2\partial_1R_3) + F_2(\partial_1R_3\partial_2R_1 - \partial_2R_3\partial_1R_1) +\\ F_3(\partial_1R_1\partial_2R_2-\partial_2R_1\partial_1R_2))d(1)\wedge d(2)\right) = \\ \int_{R} F_1(\partial_1R_2\partial_2R_3 - \partial_2R_2\partial_1R_3) + F_2(\partial_1R_3\partial_2R_1 - \partial_2R_3\partial_1R_1) +\\ F_3(\partial_1R_1\partial_2R_2-\partial_2R_1\partial_1R_2)d(1)\wedge d(2) $$
 Where $ R = \partial V$.
+We now need to expand the lhs by deriving it.
 
 <br><br>
-<h1>Differential Forms</h1>
-A differential 1-form can be defined as:
-$$ \omega = \lambda \left(\sum_{i=1}^n\lambda_{1,n}d\space \lambda_{2,n}\right) $$
-$$ \Rightarrow \omega(F, R) = \sum_{i=1}^{arity(F)}F_i\space d\space R_i $$
-Suppose we want the integral over the 1-manifold $R$ of the vector field $F$, both being in $\mathbb{R}^3$:
-$$ \int_R\omega(F,R) = \int_RF_1\space \partial_1R_1\space d(1) + F_2\space \partial_1R_2\space d(1) + F_3\space \partial_1R_3\space d(1) $$
-$$ \int_R\omega(F,R) = \int_R(F_1\space \partial_1R_1 + F_2\space \partial_1R_2 + F_3\space \partial_1R_3)d(1) $$
-The differential 2-form over a 2-manifold is similar:
+<h1>Kleene-Rosser Paradox</h1>
+The lambda calculus is fundamentally inconsistent as shown by the Kleene-Rosser paradox:
+$$ k = \lambda(\neg(\space \lambda_: \space \lambda_:)) $$
+$$ \Rightarrow k \space k = \neg(k \space k) $$
+We can interpret this as recursion:
+$$ kk = p = \neg p = \neg^2 p = ... $$
+
+<br><br>
+<h1>Turing Completeness</h1>
+Lambda calculus is Turing complete:
+$$ \Omega \equiv \lambda^2(\lambda \lambda_: \space \lambda_:^2 \space \lambda \lambda_:) $$
+$$ T \equiv \Omega \space \Omega $$
+Where $t$ is a single-step Turing interpreter:
+$$ T \space t \space (input) \rightarrow_\beta t \space t \space ... \space t \space (input) $$
+simulates the turing machine.<br>
+
+<br><br>
+<h1>Semantics</h1>
+The semantics of lambda expressions are as follows:<br>
+1. If a beta reduction contains a lambda accessor, the entire expression shall be a lambda expression.
+$$ \lambda(\nabla \space \lambda_:) A \rightarrow_\beta \nabla \space A $$
+$$ (\lambda(\nabla \space \lambda_:) \lambda(\lambda_:)) A \rightarrow_\beta \lambda(\nabla \space \lambda(\lambda_:)) A $$
+Where $ \lambda(\nabla \space \lambda_:) = \lambda((\partial_1, \partial_2, ...) \lambda_:)) $
+$$ (\lambda \space \lambda_:) (\lambda \space \sin \space \lambda_:) (A) $$
+$$ (\lambda \space \sin \space \lambda_:) (A) $$
+$$ (\lambda \space \lambda_:) (\sin \space A) $$
+Left-recursive:
+$$ (\lambda_: + 1) (\sin \space \lambda_1 + \cos \space \lambda_2) (a, b) $$
+$$ \Rightarrow ((\sin \space \lambda_1 + \cos \space \lambda_2) + 1) (a, b) $$
+$$ \Rightarrow ((\sin \space a + \cos \space b) + 1) $$
+Right-recursive:
+$$ (\lambda_: + 1) (\sin \space \lambda_1 + \cos \space \lambda_2) (a, b) $$
+$$ (\lambda_: + 1) (\sin \space a + \cos \space b) $$
+$$ ((\sin \space a + \cos \space b) + 1)  $$
+The question is whether this is a desired syntax:
+$$ d = \sum_{i=1}^\infty \partial_i \lambda_1 \space d \space \lambda_2 $$
+This doesn't allow one to index a tuple like earlier, but should be fine using:
+$$ second = (\lambda)_{i,j} $$
+Or a similar accessor function.
+Using the above definition:
+$$ \mathrm{d} \space \sin \space x = (\partial_1 \sin \space \mathrm{d} \space \lambda) x = \partial_1 \sin \space \mathrm{d} \space x $$
+My question is whether we can now properly nest expressions:
+$$ (a + (b \cdot \lambda) \lambda) A = (a + (b \cdot A) A) $$
+$$ (a + (b \cdot \lambda_2) \lambda) A = (a + (b \cdot \lambda) A) $$
+Does the second lambda now become a value of $ A $ or do we need to apply another argument?
+$$ (a + (b \cdot \lambda) \lambda) A = (a + (b \cdot A) A) $$
+$$ (:a + (b \cdot \lambda_2) \lambda) A = (a + (b \cdot \lambda) A) $$
+It is indeed true that the original lambda calculus can refer to variables outside its own
+function via lexical scoping. So should my calculus reflect this? I'd prefer to keep variable indices.
+Idea:
+$$ (x: x_1 + (y: y_1 \cdot x_1)x_2) (1, 2) (3) $$
+No that doesn't work. Besides, lexical scoping shouldn't be suggested since it's something that breaks locality:
+$$ (: \lambda_1 + (: \lambda_2 \cdot \lambda_1)\lambda_2) (1, 2) (3) $$
+Trying to define d again:
+$$ \mathrm{d} = \sum_{i=1}^\infty \partial_i \lambda_1 \space \lambda_2 \space \mathrm{d} \space (\lambda_2)_i $$
+$$ \sum_{i=n}^N = \lambda_1(n) + \lambda_1(n+1) + ... + \lambda_1(N) $$
+$$ \mathrm{d} = (:\lambda_1(n) + \lambda_1(n+1) + ... + \lambda_1(N)) (:\partial_\lambda_1 \lambda_2 \space \lambda_3 \space \mathrm{d} \space (\lambda_3)_\lambda_1) $$
+$$ \mathrm{d} = \partial_1 \lambda_1 \space \lambda_2 \space \mathrm{d} \space (\lambda_2)_1 + \partial_2 \lambda_1 \space \lambda_2 \space \mathrm{d} \space (\lambda_2)_2 + ... $$
+$$ \mathrm{d} \space \sin = (:\partial_1 \lambda_1 \space \lambda_2 \space \mathrm{d} \space (\lambda_2)_1 + \partial_2 \lambda_1 \space \lambda_2 \space \mathrm{d} \space (\lambda_2)_2 + ...) \sin $$
+$$ \mathrm{d} \space \sin = (:\partial_1 \sin \space \lambda_1 \space \mathrm{d} \space (\lambda_1)_1) $$
+What about nabla-like syntax for various functions?
+$$ \nabla = (\partial_1 \space \lambda, \partial_2 \space \lambda, ...) $$
+$$ T \space \nabla = (: T \space \lambda)(: (\partial_1 \space \lambda, \partial_2 \space \lambda, ...)) $$
+Sums can thus be made anonymous:
+$$ \sum_n^N \lambda = n + (n+1) + ... + N $$
+Let's try deriving a function like:
+$$ f = \lambda_1 \space \lambda_2 $$
+$$ \mathrm{d} \space f \space x \space y = \partial_1 f \space \mathrm{d} \space x + \partial_2 f \space \mathrm{d} \space y $$
+$$ \mathrm{d} \space f \space x \space y = (: \lambda_2) x \space y \space \mathrm{d} \space x + (: \lambda_1) x \space y \space \mathrm{d} \space y $$
+$$ \mathrm{d} \space f \space x \space y = y \space \mathrm{d} \space x + x \space \mathrm{d} \space y $$
+I'm trying to formalize all this but it's difficult.
+<br>
+What exactly is a derivative? I don't understand it anymore. Let's try defining the derivative for various functions.<br>
+One variable:
+$$ \mathrm{d} = \partial_1 \space \lambda \space \lambda_2 \space \mathrm{d} \space \lambda_2 $$
+Two variables:
+$$ \mathrm{d} = \partial_1 \space \lambda \space \lambda_2 \space \lambda_3 \space \mathrm{d} \space \lambda_2 + \partial_2 \space \lambda \space \lambda_2 \space \lambda_3 \space \mathrm{d} \space \lambda_3 $$
+This is not compatible with the notation $ f(x,y) $ when $ (x,y) $ is a tuple. In my case, we actually provide two distinct arguments, and not a tuple. This discrepancy can be solved by simply stating that the aforementioned is not a tuple but rather an argument list that implicitly curries.
+This would require an explicit decoupling from tensors.
+$$ \mathrm{d} = \partial_1 \space \lambda \space \lambda_2 \space \mathrm{d} \space (\lambda_2)_1 + \partial_2 \space \lambda \space \lambda_2 \space \mathrm{d} \space (\lambda_2)_2 $$
+How can we unify the notion of a derivative with the jacobian matrix? That one is basically the same as $ \bar{\nabla} \space T \space f $.
+Suppose we are given $ f = T \space \lambda_1 \space \lambda_2 $:
+$ \mathrm{d} \space f = (: T \space 1_: \space \lambda_2) \lambda_2
+Verily, we can't make () a column vector simply because doing $ f (x) $ with $ f $ being a matrix and $ (x) $ being a vector (imagine x as multiple elements) would cause a matrix-product to occur. Not good. So a tuple has to be distinct.

@@ -39,45 +39,97 @@ $$
 \end{bmatrix}
 $$
 And so on.<br>
-Tuples denote column vectors: $ (x_1, x_2, ..., x_n) = T[x_1, x_2, ..., x_n] $. Tuples are written using parentheses. A single-element tuple is written $ (x,) $. The T operator denotes transposition. Vectors and tuples may have trailing commas.
+Tuples are written using parentheses: $ (x_1, x_2, ..., x_n) $. A single-element tuple is written $ (x) $ or just $ x $.
+
+<br><br>
+<h1>Transpose</h1>
+The $ T $ operator denotes the transpose of a tensor.
 
 <br><br>
 <h1>Functions</h1>
 Functions are expressions that map mathematical objects. A function always refers to its parameters via lambda enumerators. A function is always a right-facing operator.
 <br>
 Example 1:
-$$ F = \lambda_1 $$
+$$ F = \lambda_1 = \lambda $$
 This function maps the first argument to itself. If we supply a tuple, we get $ F(x) = x $.
+No subscript on the lambda means $ \lambda_1 $.
 
 <br>
 Example 2:
 $$ F = \lambda_2 $$
-This function maps the second argument of its tuple. If we supply two arguments we get $ F(x)(y) = y $.
+This function maps the second argument of its tuple. If we supply two arguments we get $ F(x)(y) = F(x, y) = y $.
 
 <br>
 Example 3:
 $$ F = \lambda_2 - \lambda_1 $$
 If we supply one argument, we get $ F(x) = \lambda_1 - x $. Every time an argument is provided, $ \lambda_1 $ is replaced by the argument. All other $ \lambda_n $ are decremented.
-If we supply two arguments, we get $ F(x)(y) = y - x $.
+If we supply two arguments, we get $ F(x)(y) = F(x, y) = y - x $.
 
 <br>
 Example 4:
 $$ F = \lambda_2 \lambda_1 $$
-If we supply a tuple, we get $ F(x)(y) = y\cdot x $.
+If we supply a tuple, we get $ F(x)(y) F(x, y) = y\cdot x $.
 
 <br>
 Example 5:
 $$ F = A_2 \space \lambda_1 $$
-If we supply an argument, we get $ F(x) = A_2 x $.
+If we supply an argument, we get $ F(x) = A_2 \space x $.
 
 <br><br>
-<h1>Implicit Pattern</h1>
+<h1>Lambda Signifier</h1>
+The lambda signifier is given by $ (: $. It is used in expressions where one must denote that this is a function. For single variables we can drop it because it is implicit:
+$$ f = \lambda_1 + \lambda_2 = (: \lambda_1 + \lambda_2) $$
+Because when using $ f $ in an expression, $ (: $ is implied:
+$$ f (9, 3) = (: f)(9,3) $$
+$ (: $ becomes $ ( $ when the expression becomes $ \eta $-reducable.
+
+<br><br>
+<h1>$ \eta $-reduction</h1>
 The pattern
 $$ (: X \space \lambda) $$
 can always be written as
 $$ X $$
 since there is no semantic difference.<br>
-This is called an $ \eta $-reduction.
+This is called an $ \eta $-reduction. We may write:
+$$ (: X \space \lambda) \rightarrow_\beta X $$
+If and only if $ X $ is a function or can be regarded as such.
+
+<br><br>
+<h1>Scope</h1>
+A lambda variable is bound to the closest declaration of $ (: $.
+$$ (: \lambda \cdot (: 5 + \lambda) \lambda) $$
+The first lambda is bound to the outer function. The second lambda bound to the inner function, and the last lambda is bound to the outer function. In this case, the third lambda is passed to the inner function.
+$$ (: \lambda \cdot (: 5 + \lambda) \lambda) 3 \rightarrow_\beta (: 3 \cdot (: 5 + \lambda) 3) \rightarrow_\eta (3 \cdot (: 5 + \lambda) 3) \rightarrow_{\beta\eta} (3 \cdot (5 + 3)) $$
+We can state the number of lambda variables as well, this is useful if we want to consume a variable and not use it.
+$$
+(\lambda_{10}: \lambda_9 + \lambda_4)(1,2,3,4,5,6,7,8,9) \\
+\rightarrow_\beta (\lambda_9: \lambda_8 + \lambda_3)(2,3,4,5,6,7,8,9) \\
+\rightarrow_\beta (\lambda_8: \lambda_7 + \lambda_2)(3,4,5,6,7,8,9) \\
+\rightarrow_\beta (\lambda_7: \lambda_6 + \lambda_1)(4,5,6,7,8,9) \\
+\rightarrow_\beta (\lambda_6: \lambda_5 + 4)(5,6,7,8,9) \\
+\rightarrow_\beta (\lambda_5: \lambda_4 + 4)(6,7,8,9) \\
+\rightarrow_\beta (\lambda_4: \lambda_3 + 4)(7,8,9) \\
+\rightarrow_\beta (\lambda_3: \lambda_2 + 4)(8,9) \\
+\rightarrow_\beta (\lambda_2: \lambda_1 + 4)(9) \\
+\rightarrow_\beta (\lambda_1: 9 + 4)(9) \\
+= (\lambda: 9 + 1)
+$$
+A function can also accept arbitrary lambda expressions:
+$$ (\lambda : \lambda) (\lambda_2) = (\lambda_2 : \lambda_2) $$
+
+<br><br>
+<h1>Tensors II</h1>
+Tensors are to be considered functions of tuples. Let's start with vectors:
+$$ \left(: \begin{bmatrix} \lambda_1 \\ \lambda_2 \\ \vdots \\ \lambda_n \end{bmatrix}\right) $$
+The same can be done for matrices and higher order tensors. The use of this becomes clear when we define the derivative of a function that takes in a vector:
+$$ f = A \cdot \lambda $$
+where A is an arbitrary matrix, and $ \lambda $ is a column vector. Assume the length of the vector is 3.
+$$ \mathrm{d} \space f = \partial_1 f \space \lambda \space \mathrm{d} \space \lambda $$
+Let $ V $ be the vector function that transforms a tuple to a vector.
+$$ \mathrm{d} \space f \space V = \partial_1 f \space V \space \mathrm{d} \space V $$
+$$ \mathrm{d} \space f \space V = (1: A) \space V \space \mathrm{d} \space V $$
+$$ \mathrm{d} \space f \space V = A \space \mathrm{d} \space V $$
+$$ \mathrm{d} \space f \space V = A \space (\partial_1\space V \space \mathrm{d}\space\lambda_1 + \partial_2\space V \space \mathrm{d}\space\lambda_2 + \partial_3\space V \space \mathrm{d}\space\lambda_3) $$
 
 <br><br>
 <h1>Sums and Products</h1>
